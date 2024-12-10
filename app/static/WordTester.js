@@ -10,10 +10,11 @@ function checkWord(word) {
             console.log("WOOOO");
             console.log("the word is", response.valid);
             if (response.valid == "true") {
-                newGuess = document.createElement("li");
+                newGuess = document.createElement("div");
+                newGuess.classList.add("guessElement");
                 newGuess.innerHTML = word;
                 guesses.appendChild(newGuess);
-            }
+            }   
         },
         error: function(){
             console.log("error checking word validity");

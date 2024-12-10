@@ -5,7 +5,7 @@
                         <div class="page_title">
                             Log In
                         </div>
-                        <form action="/submit" method="post" name="login">
+                        <form action="/submit" method="post" name="login" autocomplete="off">
                             {{ form.hidden_tag() }}
                             <div class="form-element">Username:<br>{{ form.username }}</div><br>
                             <div class="form-element">Password:<br>{{ form.password }}</div><br>

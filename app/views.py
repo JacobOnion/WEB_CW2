@@ -60,28 +60,33 @@ def register():
 
 @app.route("/logout")
 def logout():
+    if "userId" not in session:
+        flash("not logged in")
+        return  redirect(url_for("login"))
     session.pop("userId", None)
     return redirect(url_for("login"))
         
 
 @app.route('/selector_page', methods=['GET', 'POST'])
 def temp():
-    try:
-        session["userId"]
-        global validWords
-        currentDir = os.path.dirname(__file__)
-        relPath = "static/words_dictionary.json"
-        filePath = os.path.join(currentDir, relPath)
-        with open(filePath) as wordFile:
-            validWords = json.load(wordFile)
-        puzzles = Puzzle.query.all()
-        puzzleNum = len(puzzles)
-        return (render_template("main.html", puzzleList = puzzles, puzzleNum = puzzleNum))
-    except KeyError:
+    if "userId" not in session:
+        flash("not logged in")
         return  redirect(url_for("login"))
+    global validWords
+    currentDir = os.path.dirname(__file__)
+    relPath = "static/words_dictionary.json"
+    filePath = os.path.join(currentDir, relPath)
+    with open(filePath) as wordFile:
+        validWords = json.load(wordFile)
+    puzzles = Puzzle.query.all()
+    puzzleNum = len(puzzles)
+    return (render_template("main.html", puzzleList = puzzles, puzzleNum = puzzleNum))
 
 @app.route('/leaderboard_page/<int:puzzleId>')
 def leaderboard(puzzleId):
+    if "userId" not in session:
+        flash("not logged in")
+        return  redirect(url_for("login"))
     users = []
     scores = []
     query = select(AttemptsTable).where(AttemptsTable.c.puzzleId == puzzleId).order_by(
@@ -95,6 +100,9 @@ def leaderboard(puzzleId):
 
 @app.route('/puzzle_page/<int:puzzleId>')
 def renderPuzzle(puzzleId):
+    if "userId" not in session:
+        flash("not logged in")
+        return  redirect(url_for("login"))
     global guessedWords
     guessedWords = []
     puzzleWord = Puzzle.query.get(puzzleId).puzzleLetters
@@ -102,28 +110,31 @@ def renderPuzzle(puzzleId):
 
 @app.route('/create_puzzle', methods = ['GET', 'POST'])
 def createPuzzle():
-    try:
-        session["userId"]
-        form = PuzzleForm()
-        if form.validate_on_submit():
-            letters = form.letters.data.lower()
-            if len(letters) > 4 and len(letters) < 11:
-                existingPuzzle = Puzzle.query.filter_by(puzzleLetters = letters).first()
-                if existingPuzzle is None:
-                    newPuzzle = Puzzle(puzzleLetters = letters)
-                    db.session.add(newPuzzle)
-                    db.session.commit()
-                    return redirect(url_for("temp"))
-                else:
-                    flash("puzzle already exists")
+    if "userId" not in session:
+        flash("not logged in")
+        return  redirect(url_for("login"))
+    session["userId"]
+    form = PuzzleForm()
+    if form.validate_on_submit():
+        letters = form.letters.data.lower()
+        if len(letters) > 4 and len(letters) < 11 and letters.isalpha():
+            existingPuzzle = Puzzle.query.filter_by(puzzleLetters = letters).first()
+            if existingPuzzle is None:
+                newPuzzle = Puzzle(puzzleLetters = letters)
+                db.session.add(newPuzzle)
+                db.session.commit()
+                return redirect(url_for("temp"))
             else:
-                flash("puzzle must be between 5 and 10 letters")
-        return (render_template("puzzleform.html", form = form))
-    except KeyError:
-        return redirect(url_for("login"))
+                flash("puzzle already exists")
+        else:
+            flash("puzzle must be between 5 and 10 letters")
+    return (render_template("puzzleform.html", form = form))
 
 @app.route('/word_check', methods = ['POST'])
 def checkWord():
+    if "userId" not in session:
+        flash("not logged in")
+        return  redirect(url_for("login"))
     global validWords
     global guessedWords
     wordData = json.loads(request.data)
@@ -137,6 +148,9 @@ def checkWord():
 
 @app.route("/submit_score", methods = ["POST"])
 def submitScore():
+    if "userId" not in session:
+        flash("not logged in")
+        return  redirect(url_for("login"))
     id = json.loads(request.data).get("puzzleId")
     newScore = json.loads(request.data).get("score")
     query = select(AttemptsTable).where((AttemptsTable.c.userId == session["userId"])

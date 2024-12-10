@@ -15,7 +15,7 @@
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}
-                    <div class="username already exists">{{ message }}</div>
+                    <div class="invalid_credentials">{{ message }}</div>
                     {% endfor %}
                     </ul>
                 {% endif %}
