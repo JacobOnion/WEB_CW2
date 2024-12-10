@@ -47,7 +47,7 @@ def register():
         existingUser = User.query.filter_by(username = form.username.data).first()
         if existingUser is None:
             if len(form.password.data) < 6:
-                flash("Password must be 6 character or longer")
+                flash("Password must be 6 characters or longer")
             else:
                 newUser = User(username = form.username.data)
                 User.set_password(newUser, form.password.data)
