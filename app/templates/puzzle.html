@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id = puzzle_page>
+        <h1 class=page_title>Puzzle #{{ puzzleId }}</h1>
+        <br>
+        <div id="timer">
+            45
+        </div>
+        <div id="finish">
+            Times up!<br>
+            Score:<div id="score">{{ puzzleId }}</div>
+            <a id="home_button" href="/selector_page">Return to Main Menu</a>
+        </div>
+        <br><br>
+        <div class="puzzle_container container-fluid">
+            <div id="drop_boxes" class="row justify-content-center">
+                {% for i in range(0, wordLen) %}
+                    <div id="{{i}}" class="letter_box col col-xs-offset-1" draggable="true" data-letter={{puzzleWord[i]}}>{{ puzzleWord[i] }}</div>
+                {% endfor %}
+            </div>
+            <br><br><br><br>
+            <div id="answer" class="answer_box"></div>
+            </div>
+            <div id="guesses">
+                <ul id="words_found">
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

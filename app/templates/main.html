@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="main_page">
+        <div class="page_title">
+            Word Scramble
+        </div>
+        {% for i in range(0, puzzleNum) %}
+        <a style="text-decoration: none" href="/leaderboard_page/{{puzzleList[i].puzzleId}}" class="puzzle_card">
+            Puzzle #{{puzzleList[i].puzzleId}}
+        </a>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="centre_page">
+        <div id="login_box">
+            <div class="page_title">
+                Create Account
+            </div>
+            <form action="/submit" method="post" name="register" autocomplete="off">
+                {{ form.hidden_tag() }}
+                <div class="form-element">Username: <br>{{form.username }}</div><br>
+                <div class="form-element">Password<br>{{form.password }}</div><br>
+                <input type="submit" class="submitButton btn btn-outline-primary" value="Register" formaction="/register">
+            </form>
+            <a href="/login" class="btn btn-outline-success">Log In</a>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="username already exists">{{ message }}</div>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+{% endblock %}
